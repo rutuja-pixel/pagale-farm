@@ -1,67 +1,70 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
-import Section from './ui/Section';
-import Placeholder from './ui/Placeholder';
-import { galleryCategories, galleryItems, type GalleryCategory } from '../data/content';
+import { useI18n } from '../i18n';
+import { G, galleryCats, galleryItems } from '../data/site';
+import Reveal from './Reveal';
 
 export default function Gallery() {
-  const [filter, setFilter] = useState<'All' | GalleryCategory>('All');
-  const [active, setActive] = useState<number | null>(null);
-
-  const items = useMemo(
-    () => (filter === 'All' ? galleryItems : galleryItems.filter((i) => i.category === filter)),
-    [filter]
-  );
-
-  const move = useCallback(
-    (dir: 1 | -1) => setActive((a) => (a === null ? a : (a + dir + items.length) % items.length)),
-    [items.length]
-  );
+  const { t } = useI18n();
+  const [cat, setCat] = useState<string>('all');
+  const [open, setOpen] = useState<number | null>(null);
+  const list = cat === 'all' ? galleryItems : galleryItems.filter((i) => i.cat === cat);
+  const step = (d: number) => setOpen((o) => (o === null ? o : (o + d + list.length) % list.length));
 
   useEffect(() => {
-    if (active === null) return;
+    if (open === null) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setActive(null);
-      if (e.key === 'ArrowRight') move(1);
-      if (e.key === 'ArrowLeft') move(-1);
+      if (e.key === 'Escape') setOpen(null);
+      if (e.key === 'ArrowRight') step(1);
+      if (e.key === 'ArrowLeft') step(-1);
     };
+    document.body.style.overflow = 'hidden';
     window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [active, move]);
+    return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = ''; };
+  });
 
-  const current = active !== null ? items[active] : null;
+  const cur = open === null ? null : list[open];
 
   return (
-    <Section id="gallery" title="Gallery" intro="A look at the garden and the celebrations it has hosted (sample placeholders).">
-      <div className="chips" role="group" aria-label="Filter gallery">
-        {galleryCategories.map((c) => (
-          <button key={c} className={`chip ${filter === c ? 'chip--on' : ''}`} aria-pressed={filter === c} onClick={() => { setFilter(c); setActive(null); }}>
-            {c}
-          </button>
+    <section id="gallery" className="wrap gallery">
+      <Reveal><h2><span /> {t('gal_h')} <span /></h2></Reveal>
+      <Reveal delay={0.1}><p className="muted center">{t('gal_p')}</p></Reveal>
+      <div className="gallery__tabs">
+        {galleryCats.map((c) => (
+          <button type="button" key={c.id} className={cat === c.id ? 'on' : ''} onClick={() => { setCat(c.id); setOpen(null); }}>{t(c.key)}</button>
         ))}
       </div>
-      <div className="masonry">
-        {items.map((it, i) => (
-          <button key={it.id} className="masonry__item" onClick={() => setActive(i)} aria-label={`Open ${it.title}`}>
-            <Placeholder tone={it.tone} src={it.src} ratio={it.ratio} label={it.title} />
-          </button>
+      <div className="gallery__grid" key={cat}>
+        {list.map((i, idx) => (
+          <motion.button
+            type="button" key={i.n} className="gallery__item" onClick={() => setOpen(idx)} aria-label={i.label}
+            initial={{ opacity: 0, y: 24, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ delay: idx * 0.05, duration: 0.5 }}
+          >
+            <img src={G(i.n)} alt={i.label} loading="lazy" />
+          </motion.button>
         ))}
       </div>
+
       <AnimatePresence>
-        {current && (
-          <motion.div className="lightbox" role="dialog" aria-modal="true" aria-label={current.title}
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setActive(null)}>
-            <button className="lightbox__btn lightbox__close" onClick={() => setActive(null)} aria-label="Close"><X /></button>
-            <button className="lightbox__btn lightbox__prev" onClick={(e) => { e.stopPropagation(); move(-1); }} aria-label="Previous"><ChevronLeft /></button>
-            <div className="lightbox__frame" onClick={(e) => e.stopPropagation()}>
-              <Placeholder tone={current.tone} src={current.src} ratio={current.ratio} label={current.title} />
-              <p>{current.title}</p>
-            </div>
-            <button className="lightbox__btn lightbox__next" onClick={(e) => { e.stopPropagation(); move(1); }} aria-label="Next"><ChevronRight /></button>
+        {cur && (
+          <motion.div className="lightbox" role="dialog" aria-modal="true" aria-label={cur.label} onClick={() => setOpen(null)}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <button type="button" className="lightbox__x" aria-label={t('close')} onClick={() => setOpen(null)}><X size={26} /></button>
+            <button type="button" className="lightbox__nav lightbox__prev" aria-label={t('prev')} onClick={(e) => { e.stopPropagation(); step(-1); }}><ChevronLeft size={32} /></button>
+            <figure onClick={(e) => e.stopPropagation()}>
+              <motion.img
+                key={cur.n} src={G(cur.n)} alt={cur.label}
+                initial={{ opacity: 0, scale: 0.94 }} animate={{ opacity: 1, scale: 1 }}
+                drag="x" dragConstraints={{ left: 0, right: 0 }} dragElastic={0.4}
+                onDragEnd={(_, info) => { if (info.offset.x < -70) step(1); else if (info.offset.x > 70) step(-1); }}
+              />
+              <figcaption>{cur.label} · {(open ?? 0) + 1}/{list.length}</figcaption>
+            </figure>
+            <button type="button" className="lightbox__nav lightbox__next" aria-label={t('next')} onClick={(e) => { e.stopPropagation(); step(1); }}><ChevronRight size={32} /></button>
           </motion.div>
         )}
       </AnimatePresence>
-    </Section>
+    </section>
   );
 }
