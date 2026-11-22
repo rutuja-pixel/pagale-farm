@@ -1,0 +1,41 @@
+@use 'variables' as *;
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; font: 400 17px/1.65 $font-body; color: $ink; background: $cream; -webkit-font-smoothing: antialiased; }
+img { max-width: 100%; display: block; }
+a { color: inherit; }
+h1, h2, h3 { font-family: $font-head; font-weight: 600; line-height: 1.15; margin: 0 0 .5em; }
+h2 { font-size: clamp(30px, 4.5vw, 48px); }
+h3 { font-size: 22px; }
+p { margin: 0 0 1em; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+button { font: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid $gold; outline-offset: 3px; }
+section[id] { scroll-margin-top: 72px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+
+.container { width: min(1160px, 100% - 40px); margin-inline: auto; }
+.skip { position: absolute; left: -999px; top: 8px; background: $white; padding: 8px 14px; z-index: 100;
+  &:focus { left: 8px; } }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 28px; border-radius: 999px; border: 2px solid transparent; font-weight: 700; font-size: 16px; text-decoration: none; transition: transform .2s, background .2s, color .2s; min-height: 48px;
+  &:hover { transform: translateY(-2px); }
+  &--gold { background: $gold; color: $forest-deep; &:hover { background: $gold-light; } }
+  &--forest { background: $forest; color: $cream; &:hover { background: $forest-deep; } }
+  &--outline { border-color: $forest; color: $forest; background: transparent; &:hover { background: $forest; color: $cream; } }
+  &--ghost { border-color: rgba($white, .8); color: $white; background: transparent; &:hover { background: $white; color: $forest; } }
+  &--wa { background: $wa; color: #0b2e17; }
+}
+
+.ticks li { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 8px; svg { color: $gold; flex: none; margin-top: 5px; } }
+
+/* Placeholder / image blocks */
+.ph { width: 100%; object-fit: cover; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-align: center; padding: 16px; color: rgba($white, .85); font-size: 14px;
+  &--1 { background: linear-gradient(135deg, #335c3f, #6b8f71); }
+  &--2 { background: linear-gradient(160deg, #1f3d2b, #4f7a58); }
+  &--3 { background: linear-gradient(150deg, #27492f, #8aa86f 70%, #c9b97a); }
+  &--4 { background: linear-gradient(135deg, #3d6b4a, #a9bf8a); }
+  &--5 { background: linear-gradient(170deg, #2c4f37, #7d9a6a); }
+  &--img { padding: 0; }
+}

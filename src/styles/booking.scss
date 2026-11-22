@@ -1,0 +1,39 @@
+@use 'variables' as *;
+
+.wizard { max-width: 820px; margin: 0 auto; background: $white; border: 1px solid $cream-dark; border-radius: 20px; box-shadow: 0 20px 60px rgba($forest, .08); overflow: hidden;
+  &__steps { display: grid; grid-template-columns: repeat(4, 1fr); background: $cream; border-bottom: 1px solid $cream-dark;
+    li { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 16px 6px; font-size: 14px; opacity: .55;
+      span { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid $forest; font-weight: 700; font-size: 13px; }
+      em { font-style: normal; }
+      &.is-current, &.is-done { opacity: 1; }
+      &.is-current span { background: $forest; color: $cream; }
+      &.is-done span { background: $gold; border-color: $gold; color: $forest-deep; }
+      @include sm { em { display: none; } &.is-current em { display: inline; } } } }
+  &__body { padding: clamp(20px, 4vw, 40px); min-height: 340px; }
+  &__error { color: #a93a2a; font-weight: 500; min-height: 1.5em; margin: 16px 0 0; }
+  &__bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px clamp(20px, 4vw, 40px); border-top: 1px solid $cream-dark; background: $cream;
+    @include sm { flex-direction: column; align-items: stretch; gap: 10px; padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)); } }
+  &__total { small { display: block; font-size: 13px; opacity: .7; } strong { font: 600 30px $font-head; color: $forest; line-height: 1.1; }
+    @include sm { display: flex; justify-content: space-between; align-items: baseline; small { display: inline; } } }
+  &__nav { display: flex; gap: 10px; .btn { flex: 1; @media (min-width: 601px) { flex: none; } } }
+}
+
+.fields { display: grid; gap: 22px; }
+.field { display: grid; gap: 8px; font-weight: 500;
+  input, textarea { font: inherit; padding: 13px 14px; border: 1.5px solid $cream-dark; border-radius: 10px; background: $white; color: $ink; width: 100%; min-height: 48px; &:focus { border-color: $forest; outline: none; box-shadow: 0 0 0 3px rgba($gold, .35); } } }
+.opts { border: 0; margin: 0; padding: 0; min-width: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; @include sm { grid-template-columns: 1fr; }
+  legend { font: 600 22px $font-head; color: $forest; margin-bottom: 16px; padding: 0; } }
+.opt { display: flex; align-items: center; gap: 12px; padding: 16px 18px; border: 1.5px solid $cream-dark; border-radius: 12px; cursor: pointer; min-height: 56px; transition: border-color .2s, background .2s;
+  input { accent-color: $forest; width: 18px; height: 18px; flex: none; }
+  small { display: block; font-size: 13px; opacity: .65; }
+  &:hover { border-color: $sage; }
+  &--on { border-color: $forest; background: rgba($sage, .12); }
+  &:focus-within { box-shadow: 0 0 0 3px rgba($gold, .45); } }
+
+.stepper { display: flex; align-items: center; gap: 10px;
+  button { width: 48px; height: 48px; border-radius: 50%; border: 1.5px solid $forest; background: none; color: $forest; display: grid; place-items: center; &:hover { background: $forest; color: $cream; } }
+  input { width: 100px; text-align: center; font-size: 22px; font-weight: 700; } }
+.range { accent-color: $forest; padding: 0; border: 0; min-height: 0; }
+
+.summary { margin: 0; padding: 20px; background: $cream; border-radius: 12px; display: grid; gap: 10px;
+  div { display: flex; justify-content: space-between; gap: 16px; } dt { opacity: .7; } dd { margin: 0; font-weight: 500; text-align: right; } }

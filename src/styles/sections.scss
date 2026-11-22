@@ -1,0 +1,79 @@
+@use 'variables' as *;
+
+.section { padding: $space 0;
+  &--white { background: $white; }
+  &--forest { background: $forest; color: $cream; h2 { color: $cream; } }
+  &__head { max-width: 640px; margin-bottom: 48px; h2 { color: $forest; } p { font-size: 19px; opacity: .85; } }
+}
+
+/* About */
+.about { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 6vw, 88px); align-items: center; @include md { grid-template-columns: 1fr; }
+  &__img { border-radius: 200px 200px $radius $radius; min-height: 380px; }
+  h2 { color: $forest; }
+  .ticks { margin-top: 24px; }
+}
+
+/* Events */
+.event-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; @include md { grid-template-columns: repeat(2, 1fr); } @include sm { grid-template-columns: 1fr; } }
+.event-card { position: relative; border-radius: $radius; overflow: hidden; aspect-ratio: 4/5; color: $white; outline-offset: 4px;
+  &__img { position: absolute; inset: 0; height: 100%; transition: transform .6s; span, svg { opacity: .3; } }
+  &::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 35%, rgba($forest-deep, .92)); }
+  &__body { position: absolute; inset: auto 0 0 0; padding: 24px; z-index: 1; svg { color: $gold-light; }
+    h3 { margin: 8px 0 4px; } p { margin: 0; font-size: 15px; max-height: 0; opacity: 0; overflow: hidden; transition: max-height .4s, opacity .4s; } }
+  &:hover &__img, &:focus-visible &__img { transform: scale(1.06); }
+  &:hover &__body p, &:focus-visible &__body p { max-height: 90px; opacity: .95; }
+  @media (hover: none) { &__body p { max-height: 90px; opacity: .95; } }
+}
+
+/* Facilities */
+.facility-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border-top: 1px solid $cream-dark; border-left: 1px solid $cream-dark; @include md { grid-template-columns: repeat(2, 1fr); } @include sm { grid-template-columns: 1fr; } }
+.facility { padding: 36px 30px; border-right: 1px solid $cream-dark; border-bottom: 1px solid $cream-dark; h3 { color: $forest; } p { margin: 0; opacity: .8; }
+  &__icon { display: inline-grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: $cream; color: $gold; margin-bottom: 16px; } }
+
+/* Camps */
+.camps { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(32px, 6vw, 80px); align-items: center; @include md { grid-template-columns: 1fr; }
+  &__img { border-radius: $radius; min-height: 340px; }
+  &__age { color: $gold-light; font-weight: 700; }
+  &__list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 24px; margin: 24px 0 32px; @include sm { grid-template-columns: 1fr; }
+    li { display: flex; gap: 10px; align-items: center; svg { color: $gold-light; } } }
+}
+
+/* Gallery */
+.chips { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 32px; }
+.chip { padding: 10px 22px; border-radius: 999px; border: 1.5px solid $forest; background: transparent; color: $forest; font-weight: 500; min-height: 44px;
+  &--on { background: $forest; color: $cream; } }
+.masonry { column-count: 3; column-gap: 16px; @include md { column-count: 2; } @include sm { column-count: 1; }
+  &__item { display: block; width: 100%; padding: 0; border: 0; background: none; margin-bottom: 16px; break-inside: avoid; border-radius: $radius; overflow: hidden; transition: transform .3s, box-shadow .3s;
+    &:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0, 0, 0, .18); } } }
+.lightbox { position: fixed; inset: 0; z-index: 90; background: rgba($forest-deep, .96); display: flex; align-items: center; justify-content: center; gap: 12px; padding: 20px;
+  &__frame { width: min(760px, 100%); max-height: 88vh; .ph { border-radius: $radius; max-height: 76vh; } p { color: $cream; text-align: center; margin: 14px 0 0; } }
+  &__btn { background: rgba($white, .12); color: $white; border: 0; width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; flex: none; &:hover { background: $gold; color: $forest-deep; } }
+  &__close { position: absolute; top: 16px; right: 16px; }
+  @include sm { &__prev, &__next { position: absolute; bottom: 20px; } &__prev { left: 20px; } &__next { right: 20px; } }
+}
+
+/* Packages */
+.pkg-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; align-items: stretch; @include md { grid-template-columns: 1fr; max-width: 480px; margin-inline: auto; } }
+.pkg { position: relative; display: flex; flex-direction: column; padding: 40px 32px; border: 1px solid $cream-dark; border-radius: $radius; background: $cream;
+  h3 { font-size: 28px; color: $forest; margin-bottom: 4px; }
+  &__guests { opacity: .75; }
+  &__price { font: 600 40px $font-head; color: $forest; margin: 8px 0 24px; small { display: block; font: 400 13px $font-body; color: $gold; } }
+  .ticks { flex: 1; margin-bottom: 28px; }
+  &--featured { background: $forest; color: $cream; border-color: $forest; transform: scale(1.03); @include md { transform: none; }
+    h3, .pkg__price { color: $cream; } .pkg__price small { color: $gold-light; } }
+  &__tag { position: absolute; top: -14px; left: 32px; background: $gold; color: $forest-deep; font-size: 13px; font-weight: 700; padding: 4px 14px; border-radius: 999px; }
+}
+
+/* Testimonials */
+.reviews { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; @include md { grid-template-columns: 1fr; } }
+.review { margin: 0; padding: 32px; background: $cream; border-radius: $radius; svg { color: $gold; }
+  blockquote { margin: 12px 0 20px; font: italic 500 19px/1.5 $font-head; }
+  figcaption { display: flex; flex-direction: column; span { font-size: 14px; opacity: .7; } } }
+
+/* FAQ */
+.faq { max-width: 780px; border-top: 1px solid $cream-dark;
+  &__item { border-bottom: 1px solid $cream-dark; h3 { margin: 0; font-size: 20px; } }
+  button { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 16px; text-align: left; padding: 22px 0; background: none; border: 0; color: $forest; font: 600 20px $font-head;
+    svg { flex: none; color: $gold; transition: transform .25s; &.is-open { transform: rotate(180deg); } } }
+  &__panel { overflow: hidden; p { padding-bottom: 22px; margin: 0; opacity: .85; } }
+}
